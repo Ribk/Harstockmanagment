@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Stock Management — Kids Shop</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
+header{background:#243b7a;color:white;padding:18px 20px;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:21px} header p{margin:5px 0 0;opacity:.85;font-size:13px}
+nav{display:flex;gap:8px;overflow:auto;padding:12px 16px;background:white;border-bottom:1px solid #e5e8ef}
+nav button{border:0;background:#eef2ff;padding:10px 14px;border-radius:10px;white-space:nowrap;font-weight:600;color:#243b7a}
+nav button.active{background:#243b7a;color:white}
+main{max-width:1100px;margin:auto;padding:18px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.card{background:white;border-radius:14px;padding:16px;box-shadow:0 2px 10px #0000000b}
+.card .label{font-size:12px;color:#6c7484} .card .num{font-size:23px;font-weight:700;margin-top:7px}
+.panel{background:white;border-radius:14px;padding:16px;margin-bottom:18px;box-shadow:0 2px 10px #0000000b}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+input{padding:10px 12px;border:1px solid #d7dce6;border-radius:9px;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:14px} th,td{padding:10px;border-bottom:1px solid #edf0f5;text-align:left} th{background:#f8f9fc;font-size:12px;color:#687083;position:sticky;top:73px}
+.badge{padding:4px 8px;border-radius:20px;background:#edf7ed;font-size:12px} .low{background:#fff0d9;color:#9a5a00}
+button.primary{border:0;border-radius:9px;background:#243b7a;color:white;padding:10px 13px;font-weight:600}
+button.small{border:0;border-radius:7px;padding:6px 8px;background:#eef2ff;color:#243b7a}
+.notice{padding:12px;border-radius:10px;background:#eef5ff;margin-bottom:14px}
+.empty{color:#7b8391;text-align:center;padding:20px}
+@media(max-width:800px){.cards{grid-template-columns:repeat(2,1fr)}table{min-width:800px}.panel{overflow:auto}}
+</style>
+</head>
+<body>
+<header><h1>My Stock Management</h1><p>Kids Shop • Your real inventory is loaded</p></header>
+<nav>
+<button class="active" onclick="show('dashboard',this)">Dashboard</button>
+<button onclick="show('products',this)">Products</button>
+<button onclick="show('sales',this)">Sales</button>
+<button onclick="show('stockin',this)">Stock In</button>
+<button onclick="show('alerts',this)">Alerts</button>
+</nav>
+<main id="app"></main>
+<script>
+const initial=[{"name": "Lala mobile", "purchase": 150, "qty": 4, "cost": 600, "selling": 300, "sold": 0}, {"name": "yoyo toy", "purchase": 110, "qty": 4, "cost": 440, "selling": 250, "sold": 0}, {"name": "Color guns", "purchase": 180, "qty": 6, "cost": 1080, "selling": 350, "sold": 0}, {"name": "chair Ekaka", "purchase": 300, "qty": 3, "cost": 900, "selling": 600, "sold": 0}, {"name": "Ekaka in Bag", "purchase": 550, "qty": 3, "cost": 1650, "selling": 1000, "sold": 0}, {"name": "Tablet", "purchase": 400, "qty": 4, "cost": 1600, "selling": 800, "sold": 0}, {"name": "Helicopter", "purchase": 900, "qty": 1, "cost": 900, "selling": 1600, "sold": 0}, {"name": "basket Kesh kesh", "purchase": 450, "qty": 1, "cost": 450, "selling": 700, "sold": 0}, {"name": "car 4 in 1", "purchase": 800, "qty": 1, "cost": 800, "selling": 1600, "sold": 0}, {"name": "silver cat", "purchase": 500, "qty": 4, "cost": 2000, "selling": 800, "sold": 0}, {"name": "blue & red car", "purchase": 450, "qty": 4, "cost": 1800, "selling": 750, "sold": 0}, {"name": "yebiret car", "purchase": 250, "qty": 4, "cost": 1000, "selling": 450, "sold": 0}, {"name": "Board", "purchase": 550, "qty": 4, "cost": 2200, "selling": 1100, "sold": 0}, {"name": "Goma gari", "purchase": 450, "qty": 2, "cost": 900, "selling": 700, "sold": 0}, {"name": "Konjit doll", "purchase": 1100, "qty": 1, "cost": 1100, "selling": 1600, "sold": 0}, {"name": "charger car", "purchase": 1600, "qty": 1, "cost": 1600, "selling": 2300, "sold": 0}, {"name": "Battery car", "purchase": 800, "qty": 2, "cost": 1600, "selling": 1600, "sold": 0}, {"name": "Guitar", "purchase": 400, "qty": 1, "cost": 400, "selling": 600, "sold": 0}, {"name": "Doll with chair", "purchase": 450, "qty": 4, "cost": 1800, "selling": 900, "sold": 0}, {"name": "clay Chika large", "purchase": 850, "qty": 1, "cost": 850, "selling": 1350, "sold": 0}, {"name": "clay chika small", "purchase": 500, "qty": 3, "cost": 1500, "selling": 900, "sold": 0}, {"name": "piano", "purchase": 800, "qty": 1, "cost": 800, "selling": 1600, "sold": 0}, {"name": "camera with watch", "purchase": 350, "qty": 6, "cost": 2100, "selling": 700, "sold": 0}, {"name": "eye glass", "purchase": 100, "qty": 15, "cost": 1500, "selling": 200, "sold": 0}, {"name": "colorful watch", "purchase": 350, "qty": 7, "cost": 2450, "selling": 550, "sold": 0}, {"name": "lovely watch", "purchase": 150, "qty": 3, "cost": 450, "selling": 300, "sold": 0}, {"name": "Boys watch", "purchase": 170, "qty": 4, "cost": 680, "selling": 350, "sold": 0}, {"name": "Girls watch", "purchase": 200, "qty": 4, "cost": 800, "selling": 400, "sold": 0}, {"name": "Puzzle", "purchase": 220, "qty": 3, "cost": 660, "selling": 450, "sold": 0}, {"name": "Animal", "purchase": 1500, "qty": 1, "cost": 1500, "selling": 3000, "sold": 0}, {"name": "Block", "purchase": 1000, "qty": 3, "cost": 3000, "selling": 1500, "sold": 0}];
+let items=JSON.parse(localStorage.getItem('kidsInventoryV2')||JSON.stringify(initial));
+const money=n=>new Intl.NumberFormat('en-US').format(n)+' ETB';
+function save(){localStorage.setItem('kidsInventoryV2',JSON.stringify(items));}
+function stock(x){return x.qty-x.sold}
+function renderDashboard(){
+ const totalQty=items.reduce((a,x)=>a+stock(x),0);
+ const cost=items.reduce((a,x)=>a+x.qty*x.purchase,0);
+ const sales=items.reduce((a,x)=>a+x.sold*x.selling,0);
+ const profit=items.reduce((a,x)=>a+x.sold*(x.selling-x.purchase),0);
+ const low=items.filter(x=>stock(x)<=1);
+ document.getElementById('app').innerHTML=`
+ <h2>Kids Shop Dashboard</h2>
+ <div class="notice">✅ <b>31 products</b> loaded from your Google Sheet. You can now record sales and the stock will update automatically.</div>
+ <div class="cards">
+  <div class="card"><div class="label">Products</div><div class="num">${items.length}</div></div>
+  <div class="card"><div class="label">Units in Stock</div><div class="num">${totalQty}</div></div>
+  <div class="card"><div class="label">Purchase Investment</div><div class="num">${money(cost)}</div></div>
+  <div class="card"><div class="label">Sales Recorded</div><div class="num">${money(sales)}</div></div>
+ </div>
+ <div class="panel"><h3>Profit</h3><p>Actual gross profit from recorded sales: <b>${money(profit)}</b></p>
+ <p>Potential gross profit if all current stock is sold: <b>${money(items.reduce((a,x)=>a+stock(x)*(x.selling-x.purchase),0))}</b></p></div>
+ <div class="panel"><h3>Low Stock</h3>${low.length?low.map(x=>`<span class="badge low" style="display:inline-block;margin:4px">${x.name}: ${stock(x)}</span>`).join(''):'<p class="empty">No low-stock products.</p>'}</div>`;
+}
+function renderProducts(){
+ document.getElementById('app').innerHTML=`<h2>Kids Shop Products</h2><div class="panel"><div class="toolbar"><input id="q" placeholder="Search product..." oninput="filterProducts()"><button class="primary" onclick="show('dashboard',document.querySelector('nav button'))">Back to Dashboard</button></div><div style="overflow:auto"><table id="pt"><thead><tr><th>Product</th><th>Purchase</th><th>Purchased</th><th>Cost</th><th>Selling</th><th>Sold</th><th>Stock</th><th>Status</th></tr></thead><tbody>${rows()}</tbody></table></div></div>`;
+}
+function rows(){
+ return items.map((x,i)=>`<tr><td><b>${x.name}</b></td><td>${money(x.purchase)}</td><td>${x.qty}</td><td>${money(x.cost)}</td><td>${money(x.selling)}</td><td>${x.sold}</td><td><b>${stock(x)}</b></td><td>${stock(x)<=1?'<span class="badge low">Low</span>':'<span class="badge">OK</span>'}</td></tr>`).join('');
+}
+function filterProducts(){
+ const q=document.getElementById('q').value.toLowerCase();
+ document.querySelector('#pt tbody').innerHTML=items.filter(x=>x.name.toLowerCase().includes(q)).map(x=>`<tr><td><b>${x.name}</b></td><td>${money(x.purchase)}</td><td>${x.qty}</td><td>${money(x.cost)}</td><td>${money(x.selling)}</td><td>${x.sold}</td><td><b>${stock(x)}</b></td><td>${stock(x)<=1?'<span class="badge low">Low</span>':'<span class="badge">OK</span>'}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">No product found.</td></tr>';
+}
+function renderSales(){
+ document.getElementById('app').innerHTML=`<h2>Record a Sale</h2><div class="panel"><p>Select a product and quantity. Stock will decrease automatically.</p>
+ <div class="toolbar"><select id="prod" style="padding:10px;border:1px solid #d7dce6;border-radius:9px">${items.map((x,i)=>`<option value="${i}">${x.name} — stock ${stock(x)} — ${money(x.selling)}</option>`).join('')}</select>
+ <input id="qty" type="number" min="1" value="1" style="width:90px"><button class="primary" onclick="sell()">Record Sale</button></div></div>
+ <div class="panel"><h3>Recent Sales</h3><p class="empty">Sales recorded in this browser will appear here as the system grows.</p></div>`;
+}
+function sell(){
+ const i=+document.getElementById('prod').value, q=+document.getElementById('qty').value;
+ if(!q||q<1) return alert('Enter a valid quantity.');
+ if(q>stock(items[i])) return alert('Not enough stock.');
+ items[i].sold+=q; save(); alert('Sale recorded successfully.'); renderSales();
+}
+function renderStockIn(){
+ document.getElementById('app').innerHTML=`<h2>Stock In</h2><div class="panel"><p>For now, your original purchased quantities are loaded. The full stock-in history will be added in the next version.</p><p><b>Total purchased units:</b> ${items.reduce((a,x)=>a+x.qty,0)}</p><p><b>Total purchase cost:</b> ${money(items.reduce((a,x)=>a+x.cost,0))}</p></div>`;
+}
+function renderAlerts(){
+ const low=items.filter(x=>stock(x)<=1);
+ document.getElementById('app').innerHTML=`<h2>Alerts</h2><div class="panel"><h3>Low Stock Products (${low.length})</h3>${low.length?'<table><tr><th>Product</th><th>Stock</th><th>Selling Price</th></tr>'+low.map(x=>`<tr><td>${x.name}</td><td><span class="badge low">${stock(x)} left</span></td><td>${money(x.selling)}</td></tr>`).join('')+'</table>':'<p class="empty">No low-stock products.</p>'}</div>`;
+}
+function show(page,btn){
+ document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active');
+ if(page==='dashboard')renderDashboard(); if(page==='products')renderProducts(); if(page==='sales')renderSales(); if(page==='stockin')renderStockIn(); if(page==='alerts')renderAlerts();
+}
+renderDashboard();
+</script>
+</body></html>
