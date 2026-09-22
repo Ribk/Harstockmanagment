@@ -1,100 +1,325 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Stock Management — Kids Shop</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Har Stock Management</title>
 <style>
-*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
-header{background:#243b7a;color:white;padding:18px 20px;position:sticky;top:0;z-index:5}
-header h1{margin:0;font-size:21px} header p{margin:5px 0 0;opacity:.85;font-size:13px}
-nav{display:flex;gap:8px;overflow:auto;padding:12px 16px;background:white;border-bottom:1px solid #e5e8ef}
-nav button{border:0;background:#eef2ff;padding:10px 14px;border-radius:10px;white-space:nowrap;font-weight:600;color:#243b7a}
-nav button.active{background:#243b7a;color:white}
-main{max-width:1100px;margin:auto;padding:18px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
-.card{background:white;border-radius:14px;padding:16px;box-shadow:0 2px 10px #0000000b}
-.card .label{font-size:12px;color:#6c7484} .card .num{font-size:23px;font-weight:700;margin-top:7px}
-.panel{background:white;border-radius:14px;padding:16px;margin-bottom:18px;box-shadow:0 2px 10px #0000000b}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-input{padding:10px 12px;border:1px solid #d7dce6;border-radius:9px;font-size:14px}
-table{width:100%;border-collapse:collapse;font-size:14px} th,td{padding:10px;border-bottom:1px solid #edf0f5;text-align:left} th{background:#f8f9fc;font-size:12px;color:#687083;position:sticky;top:73px}
-.badge{padding:4px 8px;border-radius:20px;background:#edf7ed;font-size:12px} .low{background:#fff0d9;color:#9a5a00}
-button.primary{border:0;border-radius:9px;background:#243b7a;color:white;padding:10px 13px;font-weight:600}
-button.small{border:0;border-radius:7px;padding:6px 8px;background:#eef2ff;color:#243b7a}
-.notice{padding:12px;border-radius:10px;background:#eef5ff;margin-bottom:14px}
-.empty{color:#7b8391;text-align:center;padding:20px}
-@media(max-width:800px){.cards{grid-template-columns:repeat(2,1fr)}table{min-width:800px}.panel{overflow:auto}}
-</style>
-</head>
+:root{--bg:#f5f7fb;--card:#fff;--text:#18212f;--muted:#687386;--line:#e4e8ef;--primary:#5b3cc4;--primary2:#7457dc;--good:#138a57;--warn:#c47b00;--bad:#c43b3b}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{position:sticky;top:0;z-index:5;background:linear-gradient(135deg,#4c2fb4,#7656db);color:#fff;padding:16px}
+header h1{margin:0;font-size:21px}header p{margin:5px 0 0;opacity:.85;font-size:12px}
+nav{position:sticky;top:67px;z-index:4;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:6px;overflow:auto;padding:8px}
+nav button{border:0;background:#f0f2f7;color:#394457;padding:10px 13px;border-radius:10px;white-space:nowrap;font-weight:600}
+nav button.active{background:#5b3cc4;color:#fff}
+main{max-width:1100px;margin:auto;padding:16px}.page{display:none}.page.active{display:block}
+h2{margin:6px 0 14px;font-size:22px}h3{margin:0 0 12px}.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px;box-shadow:0 2px 8px #00000008}.metric b{display:block;font-size:25px;margin-top:6px}.metric span{font-size:12px;color:var(--muted)}
+.shopcards{grid-template-columns:repeat(2,1fr)}.shopcard{min-height:145px}.shopcard .icon{font-size:30px}.shopcard button{margin-top:14px}
+button,.btn{cursor:pointer}.primary{background:var(--primary);color:#fff;border:0;border-radius:10px;padding:11px 15px;font-weight:700}.secondary{background:#eef0f6;border:0;border-radius:10px;padding:10px 14px;font-weight:600}.danger{background:#fdecec;color:var(--bad);border:0;border-radius:9px;padding:8px 10px}.small{padding:7px 9px;font-size:12px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.toolbar input,.toolbar select{flex:1;min-width:160px}
+input,select{width:100%;padding:11px;border:1px solid #d9deea;border-radius:9px;background:#fff;font-size:14px}
+.tablewrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}th{background:#f8f9fc;color:#596579;position:sticky;top:0}tr:last-child td{border-bottom:0}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700}.low{background:#fff2d8;color:#9b6500}.ok{background:#e5f7ee;color:#14784e}.expired{background:#fde5e5;color:#b32f2f}.soon{background:#fff2d8;color:#9b6500}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;justify-content:center;z-index:20}.modal.show{display:flex}.modalbox{background:#fff;width:min(680px,100%);max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.full{grid-column:1/-1}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+.alert{padding:12px;border-radius:11px;margin-bottom:8px}.alert.low{background:#fff7e8}.alert.exp{background:#fff0f0}
+.stockstatus{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.statusbox{padding:13px;border-radius:12px;border:1px solid var(--line);text-align:center;font:inherit;cursor:pointer}.statusbox b{display:block;font-size:24px;margin-top:4px}.statusbox small{display:block;margin-top:5px;font-size:11px;opacity:.75}.statusbox.out{background:#fde5e5;color:#b32f2f}.statusbox.low{background:#fff2d8;color:#9b6500}.statusbox.in{background:#e5f7ee;color:#14784e}
+@media(max-width:700px){.stockstatus{grid-template-columns:1fr 1fr}.statusbox.in{grid-column:1/-1}}
+
+.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}.modal-head h2{margin:2px 0 4px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--primary)}.modal-head .muted{margin:0;font-size:12px}.modal-x{width:38px;height:38px;padding:0}.formsection{border:1px solid var(--line);border-radius:13px;padding:13px;margin-top:11px;background:#fafbfe}.sectiontitle{font-size:13px;font-weight:800;margin-bottom:11px;color:#394457}.req{color:var(--bad)}
+.empty{text-align:center;padding:30px;color:var(--muted)}.sku{font-size:11px;color:var(--muted);margin-top:3px}.product-actions{white-space:nowrap}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}.shopcards{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}main{padding:12px}.metric b{font-size:20px}nav{top:65px}}
+.image-preview{margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:46px}.image-preview img{width:72px;height:72px;object-fit:cover;border-radius:10px;border:1px solid #ddd}.prod-thumb{width:42px;height:42px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:8px;border:1px solid #ddd}
+</style></head>
 <body>
-<header><h1>My Stock Management</h1><p>Kids Shop • Your real inventory is loaded</p></header>
-<nav>
-<button class="active" onclick="show('dashboard',this)">Dashboard</button>
-<button onclick="show('products',this)">Products</button>
-<button onclick="show('sales',this)">Sales</button>
-<button onclick="show('stockin',this)">Stock In</button>
-<button onclick="show('alerts',this)">Alerts</button>
+<header><h1>📦 Har Stock Management</h1><p>Kids Shop • Cosmetics Shop • Sales • Stock • Reports</p></header>
+<nav id="nav">
+<button data-page="dashboard" class="active">🏠 Dashboard</button><button data-page="kids">🧸 Kids Shop</button>
+<button data-page="cosmetics">💄 Cosmetics</button><button data-page="products">📦 Products</button>
+<button data-page="sales">🛒 Sales</button><button data-page="stockin">📥 Stock In</button>
+<button data-page="expenses">💸 Expenses</button><button data-page="history">📜 Stock History</button><button data-page="reports">📊 Reports</button><button data-page="alerts">⚠️ Alerts</button>
 </nav>
-<main id="app"></main>
+<main>
+<section id="dashboard" class="page active">
+<h2>Dashboard</h2>
+<div class="grid" id="metrics"></div>
+<div class="card" style="margin-top:12px" id="stockStatus"></div>
+<div class="grid shopcards" style="margin-top:12px">
+<div class="card shopcard"><div class="icon">🧸</div><h3>Kids Shop</h3><p class="muted" id="kidsSummary"></p><button class="primary" onclick="go('kids')">Open Kids Shop</button></div>
+<div class="card shopcard"><div class="icon">💄</div><h3>Cosmetics Shop</h3><p class="muted" id="cosSummary"></p><button class="primary" onclick="go('cosmetics')">Open Cosmetics Shop</button></div>
+</div>
+<div class="card" style="margin-top:12px"><h3>Quick actions</h3><div class="toolbar"><button class="primary" onclick="openProduct()">＋ Add Product</button><button class="secondary" onclick="openSale()">＋ Record Sale</button><button class="secondary" onclick="openStockIn()">＋ Stock In</button><button class="secondary" onclick="openExpense()">＋ Expense</button></div></div>
+</section>
+
+<section id="kids" class="page"><h2>🧸 Kids Shop</h2><div id="kidsPage"></div></section>
+<section id="cosmetics" class="page"><h2>💄 Cosmetics Shop</h2><div id="cosPage"></div></section>
+<section id="products" class="page"><h2>📦 Products</h2><div id="productsPage"></div></section>
+<section id="sales" class="page"><h2>🛒 Sales</h2><div id="salesPage"></div></section>
+<section id="stockin" class="page"><h2>📥 Stock In</h2><div id="stockinPage"></div></section>
+<section id="expenses" class="page"><h2>💸 Expenses</h2><div id="expensesPage"></div></section>
+<section id="history" class="page"><h2>📜 Stock Movement History</h2><div id="historyPage"></div></section>
+<section id="reports" class="page"><h2>📊 Reports</h2><div id="reportsPage"></div></section>
+<section id="alerts" class="page"><h2>⚠️ Alerts</h2><div id="alertsPage"></div></section>
+</main>
+
+<div class="modal" id="modal"><div class="modalbox"><div id="modalContent"></div></div></div>
 <script>
-const initial=[{"name": "Lala mobile", "purchase": 150, "qty": 4, "cost": 600, "selling": 300, "sold": 0}, {"name": "yoyo toy", "purchase": 110, "qty": 4, "cost": 440, "selling": 250, "sold": 0}, {"name": "Color guns", "purchase": 180, "qty": 6, "cost": 1080, "selling": 350, "sold": 0}, {"name": "chair Ekaka", "purchase": 300, "qty": 3, "cost": 900, "selling": 600, "sold": 0}, {"name": "Ekaka in Bag", "purchase": 550, "qty": 3, "cost": 1650, "selling": 1000, "sold": 0}, {"name": "Tablet", "purchase": 400, "qty": 4, "cost": 1600, "selling": 800, "sold": 0}, {"name": "Helicopter", "purchase": 900, "qty": 1, "cost": 900, "selling": 1600, "sold": 0}, {"name": "basket Kesh kesh", "purchase": 450, "qty": 1, "cost": 450, "selling": 700, "sold": 0}, {"name": "car 4 in 1", "purchase": 800, "qty": 1, "cost": 800, "selling": 1600, "sold": 0}, {"name": "silver cat", "purchase": 500, "qty": 4, "cost": 2000, "selling": 800, "sold": 0}, {"name": "blue & red car", "purchase": 450, "qty": 4, "cost": 1800, "selling": 750, "sold": 0}, {"name": "yebiret car", "purchase": 250, "qty": 4, "cost": 1000, "selling": 450, "sold": 0}, {"name": "Board", "purchase": 550, "qty": 4, "cost": 2200, "selling": 1100, "sold": 0}, {"name": "Goma gari", "purchase": 450, "qty": 2, "cost": 900, "selling": 700, "sold": 0}, {"name": "Konjit doll", "purchase": 1100, "qty": 1, "cost": 1100, "selling": 1600, "sold": 0}, {"name": "charger car", "purchase": 1600, "qty": 1, "cost": 1600, "selling": 2300, "sold": 0}, {"name": "Battery car", "purchase": 800, "qty": 2, "cost": 1600, "selling": 1600, "sold": 0}, {"name": "Guitar", "purchase": 400, "qty": 1, "cost": 400, "selling": 600, "sold": 0}, {"name": "Doll with chair", "purchase": 450, "qty": 4, "cost": 1800, "selling": 900, "sold": 0}, {"name": "clay Chika large", "purchase": 850, "qty": 1, "cost": 850, "selling": 1350, "sold": 0}, {"name": "clay chika small", "purchase": 500, "qty": 3, "cost": 1500, "selling": 900, "sold": 0}, {"name": "piano", "purchase": 800, "qty": 1, "cost": 800, "selling": 1600, "sold": 0}, {"name": "camera with watch", "purchase": 350, "qty": 6, "cost": 2100, "selling": 700, "sold": 0}, {"name": "eye glass", "purchase": 100, "qty": 15, "cost": 1500, "selling": 200, "sold": 0}, {"name": "colorful watch", "purchase": 350, "qty": 7, "cost": 2450, "selling": 550, "sold": 0}, {"name": "lovely watch", "purchase": 150, "qty": 3, "cost": 450, "selling": 300, "sold": 0}, {"name": "Boys watch", "purchase": 170, "qty": 4, "cost": 680, "selling": 350, "sold": 0}, {"name": "Girls watch", "purchase": 200, "qty": 4, "cost": 800, "selling": 400, "sold": 0}, {"name": "Puzzle", "purchase": 220, "qty": 3, "cost": 660, "selling": 450, "sold": 0}, {"name": "Animal", "purchase": 1500, "qty": 1, "cost": 1500, "selling": 3000, "sold": 0}, {"name": "Block", "purchase": 1000, "qty": 3, "cost": 3000, "selling": 1500, "sold": 0}];
-let items=JSON.parse(localStorage.getItem('kidsInventoryV2')||JSON.stringify(initial));
-const money=n=>new Intl.NumberFormat('en-US').format(n)+' ETB';
-function save(){localStorage.setItem('kidsInventoryV2',JSON.stringify(items));}
-function stock(x){return x.qty-x.sold}
-function renderDashboard(){
- const totalQty=items.reduce((a,x)=>a+stock(x),0);
- const cost=items.reduce((a,x)=>a+x.qty*x.purchase,0);
- const sales=items.reduce((a,x)=>a+x.sold*x.selling,0);
- const profit=items.reduce((a,x)=>a+x.sold*(x.selling-x.purchase),0);
- const low=items.filter(x=>stock(x)<=1);
- document.getElementById('app').innerHTML=`
- <h2>Kids Shop Dashboard</h2>
- <div class="notice">✅ <b>31 products</b> loaded from your Google Sheet. You can now record sales and the stock will update automatically.</div>
- <div class="cards">
-  <div class="card"><div class="label">Products</div><div class="num">${items.length}</div></div>
-  <div class="card"><div class="label">Units in Stock</div><div class="num">${totalQty}</div></div>
-  <div class="card"><div class="label">Purchase Investment</div><div class="num">${money(cost)}</div></div>
-  <div class="card"><div class="label">Sales Recorded</div><div class="num">${money(sales)}</div></div>
- </div>
- <div class="panel"><h3>Profit</h3><p>Actual gross profit from recorded sales: <b>${money(profit)}</b></p>
- <p>Potential gross profit if all current stock is sold: <b>${money(items.reduce((a,x)=>a+stock(x)*(x.selling-x.purchase),0))}</b></p></div>
- <div class="panel"><h3>Low Stock</h3>${low.length?low.map(x=>`<span class="badge low" style="display:inline-block;margin:4px">${x.name}: ${stock(x)}</span>`).join(''):'<p class="empty">No low-stock products.</p>'}</div>`;
+const SEED=[{"id": "k1", "shop": "Kids Shop", "name": "Lala mobile", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 150, "stock": 4, "price": 300}, {"id": "k2", "shop": "Kids Shop", "name": "yoyo toy", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 110, "stock": 4, "price": 250}, {"id": "k3", "shop": "Kids Shop", "name": "Color guns", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 180, "stock": 6, "price": 350}, {"id": "k4", "shop": "Kids Shop", "name": "chair Ekaka", "category": "Furniture", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 300, "stock": 3, "price": 600}, {"id": "k5", "shop": "Kids Shop", "name": "Ekaka in Bag", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 550, "stock": 3, "price": 1000}, {"id": "k6", "shop": "Kids Shop", "name": "Tablet", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 400, "stock": 4, "price": 800}, {"id": "k7", "shop": "Kids Shop", "name": "Helicopter", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 900, "stock": 1, "price": 1600}, {"id": "k8", "shop": "Kids Shop", "name": "basket Kesh kesh", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 450, "stock": 1, "price": 700}, {"id": "k9", "shop": "Kids Shop", "name": "car 4 in 1", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 800, "stock": 1, "price": 1600}, {"id": "k10", "shop": "Kids Shop", "name": "silver cat", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 500, "stock": 4, "price": 800}, {"id": "k11", "shop": "Kids Shop", "name": "blue & red car", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 450, "stock": 4, "price": 750}, {"id": "k12", "shop": "Kids Shop", "name": "yebiret car", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 250, "stock": 4, "price": 450}, {"id": "k13", "shop": "Kids Shop", "name": "Board", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 550, "stock": 4, "price": 1100}, {"id": "k14", "shop": "Kids Shop", "name": "Goma gari", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 450, "stock": 2, "price": 700}, {"id": "k15", "shop": "Kids Shop", "name": "Konjit doll", "category": "Doll", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 1100, "stock": 1, "price": 1600}, {"id": "k16", "shop": "Kids Shop", "name": "charger car", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 1600, "stock": 1, "price": 2300}, {"id": "k17", "shop": "Kids Shop", "name": "Battery car", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 800, "stock": 2, "price": 1600}, {"id": "k18", "shop": "Kids Shop", "name": "Guitar", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 400, "stock": 1, "price": 600}, {"id": "k19", "shop": "Kids Shop", "name": "Doll with chair", "category": "Doll", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 450, "stock": 4, "price": 900}, {"id": "k20", "shop": "Kids Shop", "name": "clay Chika large", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 850, "stock": 1, "price": 1350}, {"id": "k21", "shop": "Kids Shop", "name": "clay chika small", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 500, "stock": 3, "price": 900}, {"id": "k22", "shop": "Kids Shop", "name": "piano", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 800, "stock": 1, "price": 1600}, {"id": "k23", "shop": "Kids Shop", "name": "camera with watch", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 350, "stock": 6, "price": 700}, {"id": "k24", "shop": "Kids Shop", "name": "eye glass", "category": "Accessory", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 100, "stock": 15, "price": 200}, {"id": "k25", "shop": "Kids Shop", "name": "colorful watch", "category": "Watch", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 350, "stock": 7, "price": 550}, {"id": "k26", "shop": "Kids Shop", "name": "lovely watch", "category": "Watch", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 150, "stock": 3, "price": 300}, {"id": "k27", "shop": "Kids Shop", "name": "Boys watch", "category": "Watch", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 170, "stock": 4, "price": 350}, {"id": "k28", "shop": "Kids Shop", "name": "Girls watch", "category": "Watch", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 200, "stock": 4, "price": 400}, {"id": "k29", "shop": "Kids Shop", "name": "Puzzle", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 220, "stock": 3, "price": 450}, {"id": "k30", "shop": "Kids Shop", "name": "Animal", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 1500, "stock": 1, "price": 3000}, {"id": "k31", "shop": "Kids Shop", "name": "Block", "category": "Toy", "brand": "", "shade": "", "size": "", "expiry": "", "batch": "", "cost": 1000, "stock": 3, "price": 1500}];
+let data=JSON.parse(localStorage.getItem('harStockData')||'null')||{products:SEED,sales:[],stockins:[],expenses:[],movements:[]};
+let hadMovementHistory=Array.isArray(data.movements);
+if(!Array.isArray(data.movements)) data.movements=[];
+if(!Array.isArray(data.stockins)) data.stockins=[];
+if(!Array.isArray(data.sales)) data.sales=[];
+if(!Array.isArray(data.expenses)) data.expenses=[];
+data.products.forEach(p=>{p.sku=p.sku||'';p.supplier=p.supplier||'';p.minStock=(p.minStock===undefined?3:+p.minStock||0);p.color=p.color||'';p.ageGroup=p.ageGroup||'';});
+if(!hadMovementHistory && data.products.length){
+  data.products.forEach(p=>{if(p.stock>0) data.movements.push({id:'m'+Date.now()+Math.random().toString(36).slice(2,6),date:new Date().toISOString(),productId:p.id,product:p.name,sku:p.sku||'',shop:p.shop,action:'Opening Stock',change:p.stock,stockAfter:p.stock,reference:'Existing stock before history was added'});});
 }
-function renderProducts(){
- document.getElementById('app').innerHTML=`<h2>Kids Shop Products</h2><div class="panel"><div class="toolbar"><input id="q" placeholder="Search product..." oninput="filterProducts()"><button class="primary" onclick="show('dashboard',document.querySelector('nav button'))">Back to Dashboard</button></div><div style="overflow:auto"><table id="pt"><thead><tr><th>Product</th><th>Purchase</th><th>Purchased</th><th>Cost</th><th>Selling</th><th>Sold</th><th>Stock</th><th>Status</th></tr></thead><tbody>${rows()}</tbody></table></div></div>`;
+function recordMovement(p,action,change,reference=''){
+  if(!p)return;
+  data.movements.unshift({id:'m'+Date.now()+Math.random().toString(36).slice(2,6),date:new Date().toISOString(),productId:p.id,product:p.name,sku:p.sku||'',shop:p.shop,action,change,stockAfter:p.stock,reference});
 }
-function rows(){
- return items.map((x,i)=>`<tr><td><b>${x.name}</b></td><td>${money(x.purchase)}</td><td>${x.qty}</td><td>${money(x.cost)}</td><td>${money(x.selling)}</td><td>${x.sold}</td><td><b>${stock(x)}</b></td><td>${stock(x)<=1?'<span class="badge low">Low</span>':'<span class="badge">OK</span>'}</td></tr>`).join('');
+function save(){localStorage.setItem('harStockData',JSON.stringify(data));render()}
+function money(n){return new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n||0)+' ETB'}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function go(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));render()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+function totals(){let stock=data.products.reduce((a,p)=>a+p.stock,0), value=data.products.reduce((a,p)=>a+p.stock*p.cost,0), sales=data.sales.reduce((a,s)=>a+s.total,0), cost=data.sales.reduce((a,s)=>a+s.qty*s.cost,0), exp=data.expenses.reduce((a,e)=>a+e.amount,0);return{stock,value,sales,cost,exp,profit:sales-cost-exp}}
+function renderDashboard(){let t=totals();document.getElementById('metrics').innerHTML=
+[['📦',t.stock,'Units in stock'],['💰',money(t.value),'Stock cost value'],['🛒',money(t.sales),'Sales'],['📈',money(t.profit),'Net profit*']].map(x=>`<div class="card metric"><span>${x[0]} ${x[2]}</span><b>${x[1]}</b></div>`).join('');
+let k=data.products.filter(p=>p.shop==='Kids Shop'),c=data.products.filter(p=>p.shop==='Cosmetics Shop');let out=data.products.filter(p=>p.stock===0), low=data.products.filter(p=>p.stock>0&&p.stock<=3), inStock=data.products.filter(p=>p.stock>3);
+document.getElementById('stockStatus').innerHTML=`<h3>Stock Status</h3><div class="stockstatus">
+<button class="statusbox out" onclick="showStockList('out')">🔴<span>Out of Stock</span><b>${out.length}</b><small>Tap to view products</small></button>
+<button class="statusbox low" onclick="showStockList('low')">🟠<span>Low Stock</span><b>${low.length}</b><small>Tap to view products</small></button>
+<button class="statusbox in" onclick="showStockList('in')">🟢<span>In Stock</span><b>${inStock.length}</b><small>Tap to view products</small></button>
+</div>${out.length?`<div style="margin-top:12px"><b>🔴 Out-of-stock products:</b> ${out.map(p=>esc(p.name)).join(', ')}</div>`:''}`;
+document.getElementById('kidsSummary').textContent=`${k.length} products • ${k.reduce((a,p)=>a+p.stock,0)} units`;document.getElementById('cosSummary').textContent=`${c.length} products • ${c.reduce((a,p)=>a+p.stock,0)} units`;}
+function shopTable(shop,container){let arr=data.products.filter(p=>p.shop===shop);document.getElementById(container).innerHTML=`
+<div class="toolbar"><input id="${container}Search" placeholder="Search products..." oninput="filterShop('${shop}','${container}')"><button class="primary" onclick="openProduct('${shop}')">＋ Add Product</button></div>
+<div class="tablewrap"><table><thead><tr><th>Product</th><th>Category/Brand</th><th>Stock</th><th>Purchase</th><th>Selling</th><th>Value</th><th>Action</th></tr></thead><tbody id="${container}Body">${rows(arr)}</tbody></table></div>`}
+function rows(arr){return arr.length?arr.map(p=>`<tr><td>${p.image?`<img class="prod-thumb" src="${p.image}" alt="">`:``}<b>${esc(p.name)}</b><div class="sku">SKU: ${esc(p.sku||'-')}</div><div class="sku">${p.shop}</div></td><td>${esc(p.category||p.brand||'-')}${p.size?'<br>Size: '+esc(p.size):''}${p.color?'<br>Color: '+esc(p.color):''}${p.ageGroup?'<br>Age: '+esc(p.ageGroup):''}${p.shade?'<br>Shade: '+esc(p.shade):''}</td><td>${p.stock<=0?`<span class="badge expired">0</span>`:p.stock<=(+p.minStock||3)?`<span class="badge low">${p.stock}</span>`:`<span class="badge ok">${p.stock}</span>`}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td><td>${money(p.stock*p.cost)}</td><td class="product-actions"><button class="secondary small" onclick="openProduct(null,'${p.id}')">Edit</button> <button class="danger small" onclick="delProduct('${p.id}')">Delete</button></td></tr>`).join(''):`<tr><td colspan="7" class="empty">No products yet. Tap “Add Product” to start.</td></tr>`}
+function filterShop(shop,container){let q=document.getElementById(container+'Search').value.toLowerCase();document.getElementById(container+'Body').innerHTML=rows(data.products.filter(p=>p.shop===shop&&(p.name+' '+p.category+' '+p.brand+' '+p.shade).toLowerCase().includes(q)))}
+function showStockList(type){
+let title='',items=[];
+if(type==='out'){title='🔴 Out of Stock Products';items=data.products.filter(p=>p.stock===0)}
+if(type==='low'){title='🟠 Low Stock Products';items=data.products.filter(p=>p.stock>0&&p.stock<=(+p.minStock||3))}
+if(type==='in'){title='🟢 In Stock Products';items=data.products.filter(p=>p.stock>(+p.minStock||3))}
+document.getElementById('modalContent').innerHTML=`<h2>${title}</h2>
+<p class="muted">${items.length} product${items.length===1?'':'s'} found.</p>
+<div class="tablewrap"><table><thead><tr><th>Shop</th><th>Product</th><th>Category/Brand</th><th>Quantity</th></tr></thead><tbody>
+${items.length?items.map(p=>`<tr><td>${p.shop==='Kids Shop'?'🧸':'💄'} ${p.shop}</td><td><b>${esc(p.name)}</b></td><td>${esc(p.category||p.brand||'-')}</td><td><span class="badge ${type==='out'?'expired':type==='low'?'low':'ok'}">${p.stock}</span></td></tr>`).join(''):`<tr><td colspan="4" class="empty">No products in this group.</td></tr>`}
+</tbody></table></div>
+<div class="actions"><button class="primary" onclick="closeModal()">Close</button></div>`;
+showModal();
 }
-function filterProducts(){
- const q=document.getElementById('q').value.toLowerCase();
- document.querySelector('#pt tbody').innerHTML=items.filter(x=>x.name.toLowerCase().includes(q)).map(x=>`<tr><td><b>${x.name}</b></td><td>${money(x.purchase)}</td><td>${x.qty}</td><td>${money(x.cost)}</td><td>${money(x.selling)}</td><td>${x.sold}</td><td><b>${stock(x)}</b></td><td>${stock(x)<=1?'<span class="badge low">Low</span>':'<span class="badge">OK</span>'}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">No product found.</td></tr>';
+
+function renderProducts(){document.getElementById('productsPage').innerHTML=`<div class="toolbar"><input id="allSearch" placeholder="Search name, SKU, category, brand, supplier..." oninput="filterAll()"><select id="allShop" onchange="filterAll()"><option value="">All shops</option><option>Kids Shop</option><option>Cosmetics Shop</option></select><button class="primary" onclick="openProduct()">＋ Add Product</button></div><div class="tablewrap"><table><thead><tr><th>Product / SKU</th><th>Details</th><th>Stock</th><th>Purchase</th><th>Selling</th><th>Stock Value</th><th>Action</th></tr></thead><tbody id="allBody"></tbody></table></div>`;filterAll()}
+function filterAll(){let q=(document.getElementById('allSearch')?.value||'').toLowerCase(),s=document.getElementById('allShop')?.value||'';let a=data.products.filter(p=>(!s||p.shop===s)&&(p.name+' '+p.sku+' '+p.category+' '+p.brand+' '+p.shade+' '+p.supplier).toLowerCase().includes(q));document.getElementById('allBody').innerHTML=a.length?a.map(p=>`<tr><td>${p.image?`<img class="prod-thumb" src="${p.image}" alt="">`:``}<b>${esc(p.name)}</b><div class="sku">SKU: ${esc(p.sku||'-')}</div><div class="sku">${p.shop==='Kids Shop'?'🧸':'💄'} ${p.shop}</div></td><td>${esc(p.category||p.brand||'-')}${p.size?'<br>Size: '+esc(p.size):''}${p.color?'<br>Color: '+esc(p.color):''}${p.ageGroup?'<br>Age: '+esc(p.ageGroup):''}${p.shade?'<br>Shade: '+esc(p.shade):''}</td><td>${p.stock<=0?`<span class="badge expired">0</span>`:p.stock<=(+p.minStock||3)?`<span class="badge low">${p.stock}</span>`:`<span class="badge ok">${p.stock}</span>`}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td><td>${money(p.stock*p.cost)}</td><td class="product-actions"><button class="secondary small" onclick="openProduct(null,'${p.id}')">Edit</button> <button class="danger small" onclick="delProduct('${p.id}')">Delete</button></td></tr>`).join(''):`<tr><td colspan="7" class="empty">No products found.</td></tr>`}
+function openProduct(defaultShop='Kids Shop',id=null){
+let p=data.products.find(x=>x.id===id)||{id:'',shop:defaultShop||'Kids Shop',name:'',sku:'',category:'',brand:'',shade:'',size:'',color:'',ageGroup:'',expiry:'',batch:'',supplier:'',minStock:3,cost:'',stock:'',price:'',image:''};
+let cos=p.shop==='Cosmetics Shop';
+document.getElementById('modalContent').innerHTML=`
+<div class="modal-head"><div><div class="eyebrow">${id?'EDIT PRODUCT':'NEW PRODUCT'}</div><h2>${id?'Edit':'Add'} Product</h2><p class="muted">Enter the product details below. Fields are tailored to the selected shop.</p></div><button class="modal-x secondary" onclick="closeModal()">✕</button></div>
+<div class="formsection"><div class="sectiontitle">🏪 Shop & basic information</div>
+<div class="formgrid">
+<div class="field full"><label>Shop</label><select id="fshop" onchange="refreshProductFields()"><option ${p.shop==='Kids Shop'?'selected':''}>Kids Shop</option><option ${cos?'selected':''}>Cosmetics Shop</option></select></div>
+<div class="field full"><label>Product name <span class="req">*</span></label><input id="fname" value="${esc(p.name)}" placeholder="Enter product name"></div>
+<div class="field full"><label>📷 Product picture</label><input id="fimage" type="file" accept="image/*" onchange="previewProductImage(event)"><div id="imagePreview" class="image-preview" data-image="${esc(p.image||'')}">${p.image?`<img src="${p.image}" alt="Product picture"><button type="button" class="secondary small" onclick="clearProductImage()">Remove picture</button>`:'<span class="muted">Add a photo of this product (optional)</span>'}</div></div>
+<div class="field"><label>Product code / SKU</label><input id="fsku" value="${esc(p.sku||'')}" placeholder="e.g. KID-001"></div>
+<div class="field"><label>Category</label><input id="fcat" value="${esc(p.category)}" placeholder="${cos?'e.g. Makeup, Skincare':'e.g. Toy, Doll, Watch'}"></div>
+<div class="field"><label>Supplier</label><input id="fsupplier" value="${esc(p.supplier||'')}" placeholder="Supplier name"></div>
+<div class="field"><label>Minimum stock alert</label><input id="fminstock" type="number" min="0" value="${p.minStock??3}" placeholder="e.g. 3"></div>
+</div></div>
+<div id="kidsFields" class="formsection" style="${cos?'display:none':''}"><div class="sectiontitle">🧸 Kids Shop details</div><div class="formgrid">
+<div class="field"><label>Size</label><input id="fsize" value="${esc(p.size)}" placeholder="e.g. Small, Medium"></div>
+<div class="field"><label>Color</label><input id="fcolor" value="${esc(p.color||'')}" placeholder="e.g. Red"></div>
+<div class="field"><label>Age group</label><input id="fageGroup" value="${esc(p.ageGroup||'')}" placeholder="e.g. 3–5 years"></div>
+</div></div>
+<div id="cosFields" class="formsection" style="${cos?'':'display:none'}"><div class="sectiontitle">💄 Cosmetics details</div><div class="formgrid">
+<div class="field"><label>Brand</label><input id="fbrand" value="${esc(p.brand)}" placeholder="Brand name"></div>
+<div class="field"><label>Shade</label><input id="fshade" value="${esc(p.shade)}" placeholder="e.g. 03 Nude"></div>
+<div class="field"><label>Size</label><input id="fsizeCos" value="${esc(p.size)}" placeholder="e.g. 30 ml"></div>
+<div class="field"><label>Batch number</label><input id="fbatch" value="${esc(p.batch)}" placeholder="Batch / lot number"></div>
+<div class="field full"><label>Expiry date</label><input id="fexpiry" type="date" value="${p.expiry||''}"></div>
+</div></div>
+<div class="formsection"><div class="sectiontitle">💰 Stock & pricing</div><div class="formgrid">
+<div class="field"><label>Purchase price (ETB)</label><input id="fcost" type="number" min="0" step="0.01" value="${p.cost}" placeholder="0.00"></div>
+<div class="field"><label>Selling price (ETB)</label><input id="fprice" type="number" min="0" step="0.01" value="${p.price}" placeholder="0.00"></div>
+<div class="field full"><label>Current quantity</label><input id="fstock" type="number" min="0" step="1" value="${p.stock}" placeholder="0"></div>
+</div></div>
+<div class="actions"><button class="secondary" onclick="closeModal()">Cancel</button><button class="primary" onclick="saveProduct(${id ? JSON.stringify(id) : "null"})">Save Product</button></div>`;
+showModal();
 }
+function previewProductImage(e){
+let f=e.target.files?.[0];if(!f)return;
+if(!f.type.startsWith('image/')){alert('Please choose an image file.');e.target.value='';return;}
+let r=new FileReader();r.onload=()=>{let el=document.getElementById('imagePreview');el.dataset.image=r.result;el.innerHTML=`<img src="${r.result}" alt="Product picture"><button type="button" class="secondary small" onclick="clearProductImage()">Remove picture</button>`};r.readAsDataURL(f);
+}
+function clearProductImage(){let el=document.getElementById('imagePreview');el.dataset.image='';el.innerHTML='<span class="muted">No product picture selected</span>';let f=document.getElementById('fimage');if(f)f.value='';}
+function refreshProductFields(){
+let cos=document.getElementById('fshop')?.value==='Cosmetics Shop';
+document.getElementById('kidsFields').style.display=cos?'none':'block';
+document.getElementById('cosFields').style.display=cos?'block':'none';
+}
+function saveProduct(id){
+const el=id=>document.getElementById(id);
+const shop=el('fshop')?.value||'Kids Shop';
+const name=el('fname')?.value.trim()||'';
+const sku=el('fsku')?.value.trim()||'';
+if(sku&&data.products.some(x=>x.sku&&String(x.sku).toLowerCase()===sku.toLowerCase()&&x.id!==id)){alert('That product code / SKU is already in use. Please choose another one.');return;}
+const cos=shop==='Cosmetics Shop';
+const size=(el(cos?'fsizeCos':'fsize')?.value||'').trim();
+const p={id:id||'p'+Date.now(),shop,name,sku,category:el('fcat')?.value.trim()||'',brand:cos?(el('fbrand')?.value.trim()||''):'',shade:cos?(el('fshade')?.value.trim()||''):'',size,color:cos?'':(el('fcolor')?.value.trim()||''),ageGroup:cos?'':(el('fageGroup')?.value.trim()||''),expiry:cos?(el('fexpiry')?.value||''):'',batch:cos?(el('fbatch')?.value.trim()||''):'',supplier:el('fsupplier')?.value.trim()||'',minStock:Math.max(0,Number(el('fminstock')?.value)||0),cost:Number(el('fcost')?.value)||0,stock:Math.max(0,Number(el('fstock')?.value)||0),price:Number(el('fprice')?.value)||0,image:el('imagePreview')?.dataset.image||''};
+if(!p.name){alert('Please enter a product name.');return;}
+if(id){
+ const i=data.products.findIndex(x=>x.id===id);
+ if(i<0){alert('Product could not be found.');return;}
+ const oldProduct=data.products[i],oldStock=Number(oldProduct.stock)||0;
+ data.products[i]={...oldProduct,...p};
+ const change=p.stock-oldStock;
+ if(change!==0) recordMovement(data.products[i],'Inventory Adjustment',change,'Product quantity edited');
+}else{
+ data.products.push(p);
+ if(p.stock>0) recordMovement(p,'Opening Stock',p.stock,'New product added with opening quantity');
+}
+closeModal();save();
+}
+
+function openSale(shop){let opts=data.products.filter(p=>!shop||p.shop===shop).map(p=>`<option value="${p.id}">${esc(p.name)} (stock ${p.stock})</option>`).join('');if(!opts)return alert('No products available in this shop.');document.getElementById('modalContent').innerHTML=`<h2>${shop?'Record Sale — '+shop:'Record Sale'}</h2><p class="muted">This sale will be recorded under <b>${shop||'the selected product shop'}</b>.</p><div class="formgrid"><div class="field full"><label>Product</label><select id="saleProduct">${opts}</select></div><div class="field"><label>Quantity</label><input id="saleQty" type="number" min="1" value="1"></div><div class="field"><label>Unit selling price</label><input id="salePrice" type="number" min="0"></div></div><div class="actions"><button class="secondary" onclick="closeModal()">Cancel</button><button class="primary" onclick="saveSale()">Save Sale</button></div>`;showModal();setSalePrice()}
+function setSalePrice(){let p=data.products.find(x=>x.id===saleProduct.value);salePrice.value=p?.price||0;saleProduct.onchange=()=>{let q=data.products.find(x=>x.id===saleProduct.value);salePrice.value=q?.price||0}}
+function saveSale(){let p=data.products.find(x=>x.id===saleProduct.value),q=+saleQty.value;if(!p||q<1)return;if(q>p.stock)return alert('Not enough stock.');let price=+salePrice.value||0;p.stock-=q;let saleId='s'+Date.now();data.sales.unshift({id:saleId,date:new Date().toISOString(),product:p.name,productId:p.id,shop:p.shop,qty:q,price,cost:p.cost,total:q*price});recordMovement(p,'Sale',-q,'Sale '+saleId);closeModal();save()}
+function openStockIn(){let opts=data.products.map(p=>`<option value="${p.id}">${esc(p.name)} — ${p.shop}</option>`).join('');document.getElementById('modalContent').innerHTML=`<h2>Stock In</h2><div class="formgrid"><div class="field full"><label>Product</label><select id="inProduct">${opts}</select></div><div class="field"><label>Quantity added</label><input id="inQty" type="number" min="1" value="1"></div><div class="field"><label>Purchase price/unit (optional)</label><input id="inCost" type="number" min="0"></div></div><div class="actions"><button class="secondary" onclick="closeModal()">Cancel</button><button class="primary" onclick="saveStockIn()">Add Stock</button></div>`;showModal()}
+function saveStockIn(){let p=data.products.find(x=>x.id===inProduct.value),q=+inQty.value;if(!p||q<1)return;p.stock+=q;if(+inCost.value)p.cost=+inCost.value;let stockInId='i'+Date.now();data.stockins.unshift({id:stockInId,date:new Date().toISOString(),product:p.name,productId:p.id,shop:p.shop,qty:q,cost:+inCost.value||p.cost});recordMovement(p,'Stock In',q,'Stock In '+stockInId);closeModal();save()}
+function openExpense(){document.getElementById('modalContent').innerHTML=`<h2>Add Expense</h2><div class="formgrid"><div class="field"><label>Description</label><input id="expName" placeholder="Transport, rent, packaging..."></div><div class="field"><label>Amount (ETB)</label><input id="expAmount" type="number" min="0"></div></div><div class="actions"><button class="secondary" onclick="closeModal()">Cancel</button><button class="primary" onclick="saveExpense()">Save Expense</button></div>`;showModal()}
+function saveExpense(){let n=expName.value.trim(),a=+expAmount.value;if(!n||a<=0)return;data.expenses.unshift({id:'e'+Date.now(),date:new Date().toISOString(),name:n,amount:a});closeModal();save()}
+function openSaleEdit(id){
+let s=data.sales.find(x=>x.id===id);if(!s)return;
+let opts=data.products.map(p=>`<option value="${p.id}" ${p.name===s.product&&p.shop===s.shop?'selected':''}>${esc(p.name)} — ${p.shop} (stock ${p.stock})</option>`).join('');
+document.getElementById('modalContent').innerHTML=`<h2>Edit Sale</h2>
+<p class="muted">Correct the mistake, then save. The stock will be adjusted automatically.</p>
+<div class="formgrid">
+<div class="field full"><label>Product</label><select id="editSaleProduct">${opts}</select></div>
+<div class="field"><label>Quantity</label><input id="editSaleQty" type="number" min="1" value="${s.qty}"></div>
+<div class="field"><label>Unit selling price</label><input id="editSalePrice" type="number" min="0" value="${s.price}"></div>
+</div>
+<div class="actions"><button class="secondary" onclick="closeModal()">Cancel</button><button class="primary" onclick="saveSaleEdit('${id}')">Save Changes</button></div>`;
+showModal();
+}
+
+function saveSaleEdit(id){
+let s=data.sales.find(x=>x.id===id);if(!s)return;
+let newProduct=data.products.find(x=>x.id===editSaleProduct.value), newQty=+editSaleQty.value, newPrice=+editSalePrice.value||0;
+if(!newProduct||newQty<1)return alert('Please enter a valid product and quantity.');
+
+// Return the original sale quantity to its original product first.
+let oldProduct=data.products.find(p=>p.name===s.product&&p.shop===s.shop);
+if(oldProduct){oldProduct.stock+=s.qty;recordMovement(oldProduct,'Sale Edit - Return',s.qty,'Correcting sale '+id);}
+
+// Then apply the corrected sale.
+let available=newProduct.stock;
+if(oldProduct===newProduct)available+=s.qty;
+if(newQty>available){
+  if(oldProduct)oldProduct.stock-=s.qty;
+  return alert('Not enough stock for the corrected quantity.');
+}
+newProduct.stock-=newQty;recordMovement(newProduct,'Sale Edit - Sale',-newQty,'Corrected sale '+id);
+s.product=newProduct.name;s.shop=newProduct.shop;s.qty=newQty;s.price=newPrice;s.cost=newProduct.cost;s.total=newQty*newPrice;
+closeModal();save();
+}
+
+function deleteSale(id){
+let s=data.sales.find(x=>x.id===id);if(!s)return;
+if(!confirm('Delete this sale? The sold quantity will be returned to stock.'))return;
+let p=data.products.find(x=>x.name===s.product&&x.shop===s.shop);
+if(p){p.stock+=s.qty;recordMovement(p,'Sale Deleted - Return',s.qty,'Deleted sale '+id);}
+data.sales=data.sales.filter(x=>x.id!==id);
+save();
+}
+
 function renderSales(){
- document.getElementById('app').innerHTML=`<h2>Record a Sale</h2><div class="panel"><p>Select a product and quantity. Stock will decrease automatically.</p>
- <div class="toolbar"><select id="prod" style="padding:10px;border:1px solid #d7dce6;border-radius:9px">${items.map((x,i)=>`<option value="${i}">${x.name} — stock ${stock(x)} — ${money(x.selling)}</option>`).join('')}</select>
- <input id="qty" type="number" min="1" value="1" style="width:90px"><button class="primary" onclick="sell()">Record Sale</button></div></div>
- <div class="panel"><h3>Recent Sales</h3><p class="empty">Sales recorded in this browser will appear here as the system grows.</p></div>`;
+  let filter=document.getElementById('salesShopFilter')?.value||'';
+  let s=data.sales.filter(x=>!filter||x.shop===filter);
+  let kids=data.sales.filter(x=>x.shop==='Kids Shop');
+  let cos=data.sales.filter(x=>x.shop==='Cosmetics Shop');
+  let sum=arr=>({sales:arr.reduce((a,x)=>a+(+x.total||0),0),profit:arr.reduce((a,x)=>a+((+x.total||0)-((+x.qty||0)*(+x.cost||0))),0),units:arr.reduce((a,x)=>a+(+x.qty||0),0)});
+  let k=sum(kids),c=sum(cos);
+  document.getElementById('salesPage').innerHTML=`
+  <div class="grid">
+    <div class="card"><h3>🧸 Kids Shop Sales</h3><b>${money(k.sales)}</b><p class="muted">${k.units} units • Profit ${money(k.profit)}</p><button class="primary" onclick="openSale('Kids Shop')">＋ Sell Kids Product</button></div>
+    <div class="card"><h3>💄 Cosmetics Shop Sales</h3><b>${money(c.sales)}</b><p class="muted">${c.units} units • Profit ${money(c.profit)}</p><button class="primary" onclick="openSale('Cosmetics Shop')">＋ Sell Cosmetics Product</button></div>
+  </div>
+  <div class="card" style="margin-top:12px"><div class="toolbar"><h3 style="margin:0;flex:1">🧾 Sales History</h3><select id="salesShopFilter" onchange="renderSales()"><option value="">All Shops</option><option ${filter==='Kids Shop'?'selected':''}>Kids Shop</option><option ${filter==='Cosmetics Shop'?'selected':''}>Cosmetics Shop</option></select></div>
+  <div class="tablewrap"><table><thead><tr><th>Date</th><th>Shop</th><th>Product</th><th>Qty</th><th>Total</th><th>Profit</th><th>Action</th></tr></thead><tbody>${s.length?s.map(x=>`<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.shop==='Kids Shop'?'🧸':'💄'} ${x.shop}</td><td>${esc(x.product)}</td><td>${x.qty}</td><td>${money(x.total)}</td><td>${money(x.total-x.qty*x.cost)}</td><td><button class="secondary small" onclick="openSaleEdit('${x.id}')">Edit</button> <button class="danger small" onclick="deleteSale('${x.id}')">Delete</button></td></tr>`).join(''):`<tr><td colspan="7" class="empty">No sales recorded for this selection.</td></tr>`}</tbody></table></div></div>`
 }
-function sell(){
- const i=+document.getElementById('prod').value, q=+document.getElementById('qty').value;
- if(!q||q<1) return alert('Enter a valid quantity.');
- if(q>stock(items[i])) return alert('Not enough stock.');
- items[i].sold+=q; save(); alert('Sale recorded successfully.'); renderSales();
+function renderStockIn(){let s=data.stockins;document.getElementById('stockinPage').innerHTML=`<div class="toolbar"><button class="primary" onclick="openStockIn()">＋ Add Stock</button></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Shop</th><th>Product</th><th>Qty</th><th>Unit cost</th><th>Total cost</th></tr></thead><tbody>${s.length?s.map(x=>`<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.shop}</td><td>${esc(x.product)}</td><td>${x.qty}</td><td>${money(x.cost)}</td><td>${money(x.qty*x.cost)}</td></tr>`).join(''):`<tr><td colspan="6" class="empty">No stock-in records yet.</td></tr>`}</tbody></table></div>`}
+function renderExpenses(){let e=data.expenses;document.getElementById('expensesPage').innerHTML=`<div class="toolbar"><button class="primary" onclick="openExpense()">＋ Add Expense</button></div><div class="tablewrap"><table><thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead><tbody>${e.length?e.map(x=>`<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${esc(x.name)}</td><td>${money(x.amount)}</td></tr>`).join(''):`<tr><td colspan="3" class="empty">No expenses recorded yet.</td></tr>`}</tbody></table></div>`}
+function renderHistory(){
+  let q=(document.getElementById('historySearch')?.value||'').toLowerCase();
+  let shop=document.getElementById('historyShop')?.value||'';
+  let action=document.getElementById('historyAction')?.value||'';
+  let arr=data.movements.filter(m=>(!shop||m.shop===shop)&&(!action||m.action===action)&&(!q||(m.product+' '+(m.sku||'')+' '+(m.reference||'')).toLowerCase().includes(q)));
+  document.getElementById('historyPage').innerHTML=`
+  <div class="card"><p class="muted">Every stock change is recorded here: stock in, sales, corrections, and returns.</p>
+  <div class="toolbar">
+    <input id="historySearch" placeholder="Search product, SKU or reference..." value="${esc(q)}" oninput="renderHistory()">
+    <select id="historyShop" onchange="renderHistory()"><option value="">All shops</option><option ${shop==='Kids Shop'?'selected':''}>Kids Shop</option><option ${shop==='Cosmetics Shop'?'selected':''}>Cosmetics Shop</option></select>
+    <select id="historyAction" onchange="renderHistory()"><option value="">All actions</option>${['Opening Stock','Stock In','Sale','Sale Edit - Return','Sale Edit - Sale','Sale Deleted - Return','Inventory Adjustment'].map(a=>`<option ${action===a?'selected':''}>${a}</option>`).join('')}</select>
+  </div>
+  <div class="tablewrap"><table><thead><tr><th>Date & Time</th><th>Shop</th><th>Product</th><th>Action</th><th>Change</th><th>Stock After</th><th>Reference</th></tr></thead><tbody>
+  ${arr.length?arr.map(m=>`<tr><td>${new Date(m.date).toLocaleString()}</td><td>${m.shop==='Kids Shop'?'🧸':'💄'} ${esc(m.shop)}</td><td><b>${esc(m.product)}</b><div class="sku">SKU: ${esc(m.sku||'-')}</div></td><td>${esc(m.action)}</td><td><span class="badge ${m.change>0?'ok':'expired'}">${m.change>0?'+':''}${m.change}</span></td><td>${m.stockAfter}</td><td>${esc(m.reference||'-')}</td></tr>`).join(''):`<tr><td colspan="7" class="empty">No stock movements found.</td></tr>`}
+  </tbody></table></div></div>`;
 }
-function renderStockIn(){
- document.getElementById('app').innerHTML=`<h2>Stock In</h2><div class="panel"><p>For now, your original purchased quantities are loaded. The full stock-in history will be added in the next version.</p><p><b>Total purchased units:</b> ${items.reduce((a,x)=>a+x.qty,0)}</p><p><b>Total purchase cost:</b> ${money(items.reduce((a,x)=>a+x.cost,0))}</p></div>`;
+function reportDateMatch(iso,from,to){
+  let d=new Date(iso); if(Number.isNaN(d.getTime())) return false;
+  if(from){let f=new Date(from+'T00:00:00'); if(d<f)return false;}
+  if(to){let t=new Date(to+'T23:59:59.999'); if(d>t)return false;}
+  return true;
 }
-function renderAlerts(){
- const low=items.filter(x=>stock(x)<=1);
- document.getElementById('app').innerHTML=`<h2>Alerts</h2><div class="panel"><h3>Low Stock Products (${low.length})</h3>${low.length?'<table><tr><th>Product</th><th>Stock</th><th>Selling Price</th></tr>'+low.map(x=>`<tr><td>${x.name}</td><td><span class="badge low">${stock(x)} left</span></td><td>${money(x.selling)}</td></tr>`).join('')+'</table>':'<p class="empty">No low-stock products.</p>'}</div>`;
+function shopReport(shop,from,to){
+  let sales=data.sales.filter(s=>(!shop||s.shop===shop)&&reportDateMatch(s.date,from,to));
+  let revenue=sales.reduce((a,s)=>a+(+s.total||0),0);
+  let cost=sales.reduce((a,s)=>a+((+s.qty||0)*(+s.cost||0)),0);
+  let gross=revenue-cost;
+  let units=sales.reduce((a,s)=>a+(+s.qty||0),0);
+  let margin=revenue?gross/revenue*100:0;
+  let products={};
+  sales.forEach(s=>{let key=s.productId||s.product; if(!products[key])products[key]={name:s.product,qty:0,revenue:0,cost:0,profit:0}; products[key].qty+=+s.qty||0; products[key].revenue+=+s.total||0; products[key].cost+=(+s.qty||0)*(+s.cost||0); products[key].profit+=(+s.total||0)-((+s.qty||0)*(+s.cost||0));});
+  let rows=Object.values(products).sort((a,b)=>b.profit-a.profit);
+  return {sales,revenue,cost,gross,units,margin,rows};
 }
-function show(page,btn){
- document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active');
- if(page==='dashboard')renderDashboard(); if(page==='products')renderProducts(); if(page==='sales')renderSales(); if(page==='stockin')renderStockIn(); if(page==='alerts')renderAlerts();
+function reportCard(shop,icon,from,to){
+  let r=shopReport(shop,from,to);
+  let stock=data.products.filter(p=>p.shop===shop);
+  let stockValue=stock.reduce((a,p)=>a+(+p.stock||0)*(+p.cost||0),0);
+  let nearExpiry=shop==='Cosmetics Shop'?stock.filter(p=>p.expiry&&((new Date(p.expiry)-new Date())/86400000)<=30).length:0;
+  return `<div class="card report-shop"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><h3>${icon} ${shop}</h3><span class="badge ${r.gross>=0?'ok':'expired'}">${r.margin.toFixed(1)}% margin</span></div>
+  <div class="grid" style="margin-top:10px"><div class="card"><span>Sales Revenue</span><b>${money(r.revenue)}</b></div><div class="card"><span>Cost of Sold Goods</span><b>${money(r.cost)}</b></div><div class="card"><span>Gross Profit</span><b>${money(r.gross)}</b></div><div class="card"><span>Units Sold</span><b>${r.units}</b></div></div>
+  <p class="muted" style="margin:12px 0 6px">Current stock value: <b>${money(stockValue)}</b>${shop==='Cosmetics Shop'?` • Expired/≤30-day items: <b>${nearExpiry}</b>`:''}</p>
+  <div class="tablewrap"><table><thead><tr><th>Product</th><th>Units Sold</th><th>Sales</th><th>Cost</th><th>Profit</th></tr></thead><tbody>${r.rows.length?r.rows.map(x=>`<tr><td>${esc(x.name)}</td><td>${x.qty}</td><td>${money(x.revenue)}</td><td>${money(x.cost)}</td><td>${money(x.profit)}</td></tr>`).join(''):`<tr><td colspan="5" class="empty">No sales in the selected period.</td></tr>`}</tbody></table></div></div>`;
 }
-renderDashboard();
-</script>
-</body></html>
+function renderReports(){
+  let from=document.getElementById('reportFrom')?.value||'';
+  let to=document.getElementById('reportTo')?.value||'';
+  if(from&&to&&from>to){let tmp=from;from=to;to=tmp;}
+  let kids=shopReport('Kids Shop',from,to),cos=shopReport('Cosmetics Shop',from,to);
+  let allSales=[...kids.sales,...cos.sales];
+  let sales=allSales.reduce((a,s)=>a+(+s.total||0),0);
+  let cost=allSales.reduce((a,s)=>a+((+s.qty||0)*(+s.cost||0)),0);
+  let gross=sales-cost;
+  let exp=data.expenses.filter(e=>reportDateMatch(e.date,from,to)).reduce((a,e)=>a+(+e.amount||0),0);
+  let net=gross-exp;
+  let margin=sales?gross/sales*100:0;
+  document.getElementById('reportsPage').innerHTML=`
+  <div class="card"><h3>📅 Report Period</h3><div class="toolbar"><div style="flex:1;min-width:150px"><label class="muted" style="font-size:12px">From</label><input id="reportFrom" type="date" value="${esc(from)}"></div><div style="flex:1;min-width:150px"><label class="muted" style="font-size:12px">To</label><input id="reportTo" type="date" value="${esc(to)}"></div><button class="primary" style="align-self:end" onclick="renderReports()">Apply</button><button class="secondary" style="align-self:end" onclick="document.getElementById('reportFrom').value='';document.getElementById('reportTo').value='';renderReports()">All Time</button></div><p class="muted">Shop profit is calculated separately from each shop's actual recorded sales and purchase cost.</p></div>
+  <div class="grid" style="margin-top:12px"><div class="card"><span>Total Sales</span><b>${money(sales)}</b></div><div class="card"><span>Total Cost of Sold Goods</span><b>${money(cost)}</b></div><div class="card"><span>Gross Profit</span><b>${money(gross)}</b></div><div class="card"><span>Net Profit</span><b>${money(net)}</b><small class="muted">After ${money(exp)} expenses</small></div></div>
+  <div style="margin-top:12px">${reportCard('Kids Shop','🧸',from,to)}</div>
+  <div style="margin-top:12px">${reportCard('Cosmetics Shop','💄',from,to)}</div>
+  <div class="card" style="margin-top:12px"><h3>📌 How the calculation works</h3><p><b>Gross Profit = Sales Revenue − Cost of Sold Goods</b></p><p><b>Net Profit = Gross Profit − Recorded Expenses</b></p><p class="muted">Expenses are kept at business level because the current expense records do not identify a specific shop. This prevents assigning an expense to the wrong shop.</p><p class="muted">Profit margin = Gross Profit ÷ Sales Revenue × 100.</p></div>
+  <div class="card" style="margin-top:12px"><h3>Backup</h3><p class="muted">Download your data regularly so you have a copy.</p><button class="primary" onclick="downloadBackup()">⬇️ Download Backup</button> <button class="secondary" onclick="document.getElementById('restoreFile').click()">Restore Backup</button><input id="restoreFile" type="file" accept=".json" hidden onchange="restoreBackup(event)"></div>`;
+}
+function renderAlerts(){let now=new Date(),low=data.products.filter(p=>p.stock<=3),exp=data.products.filter(p=>p.shop==='Cosmetics Shop'&&p.expiry);let ex=exp.map(p=>{let d=(new Date(p.expiry)-now)/86400000;return {p,d}}).filter(x=>x.d<=30);document.getElementById('alertsPage').innerHTML=`<div class="card"><h3>Low stock (${low.length})</h3>${low.length?low.map(p=>`<div class="alert low">⚠️ <b>${esc(p.name)}</b> — ${p.stock} left (${p.shop})</div>`).join(''):'<div class="empty">No low-stock items.</div>'}</div><div class="card" style="margin-top:12px"><h3>Cosmetics expiry (${ex.length})</h3>${ex.length?ex.map(x=>`<div class="alert ${x.d<0?'exp':'low'}">${x.d<0?'🔴 Expired':'⏰'} <b>${esc(x.p.name)}</b> — ${x.p.expiry}</div>`).join(''):'<div class="empty">No expiry alerts yet.</div>'}</div>`}
+function showModal(){modal.classList.add('show')}function closeModal(){modal.classList.remove('show')}
+function downloadBackup(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='har-stock-backup.json';a.click()}
+function restoreBackup(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(x.products&&x.sales){data=x;save();alert('Backup restored.')}}catch(_){alert('Invalid backup file.')}};r.readAsText(f)}
+function render(){renderDashboard();shopTable('Kids Shop','kidsPage');shopTable('Cosmetics Shop','cosPage');renderProducts();renderSales();renderStockIn();renderExpenses();renderHistory();renderReports();renderAlerts()}
+render();
+</script></body></html>
